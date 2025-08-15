@@ -27,10 +27,10 @@ int kbhit(void);
 
 int getch(void);
 
+#endif /* UNIX */
+
 vkey_t get_key(void);
 
 int32_t read_int(const char *prompt);
-
-#endif /* UNIX */
 
 #endif /* GETCH_H */

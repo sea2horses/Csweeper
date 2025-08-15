@@ -1,0 +1,1 @@
+gcc -Wall -Werror src/main.c src/utils/consoleutils.c src/utils/input.c src/classes/templates.c src/classes/minefield.c src/classes/vec.c src/app/game.c src/app/menus.c src/app/titles.c -o build/main.exe 

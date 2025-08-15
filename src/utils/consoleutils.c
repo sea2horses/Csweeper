@@ -61,7 +61,7 @@ void console_color_reset()
 #include <windows.h>
 #include <stdlib.h>
 
-#define psleep(x) Sleep(x)
+#define psleep(x) Sleep(x * 1000)
 #define clrscr system("cls")
 
 #elif defined(__unix__) || defined(__APPLE__) || defined(__linux__)

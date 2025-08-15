@@ -362,10 +362,7 @@ static void game_loop()
   start_timestamp = time(0);
 
   /* Cooldowns */
-  const uint8_t key_cooldown = 15; /* This is useless due to the way im gauging input but whatever */
   int32_t last_time_update = -1;
-  uint8_t current_key_cooldown = 0;
-  uint8_t enter_grace_period = 0; /* This is unused btw, chat should I delete it??? */
 
   /* Assure some variables are in their correct starting values */
   correct_guesses = 0;
@@ -422,11 +419,8 @@ static void game_loop()
     }
 
     /* Movement Logic */
-    if (!current_key_cooldown && key != VK_NONE)
+    if (key != VK_NONE)
     {
-      /* Assume there was a key pressed */
-      bool key_pressed = true;
-
       /* Move mouse according to the key pressed */
       switch (key)
       {
@@ -446,23 +440,14 @@ static void game_loop()
         cursor_position.y++;
         break;
 
-      /* If there was no key pressed, set the variable to false */
       default:
-        key_pressed = false;
         break;
       }
-
-      /* If there was a key press, set the cooldown */
-      if (key_pressed)
-        current_key_cooldown = key_cooldown;
 
       /* Clamp the values to the appropriate limits */
       cursor_position.x = clamp(0, game_width - 1, cursor_position.x);
       cursor_position.y = clamp(0, game_height - 1, cursor_position.y);
     }
-
-    if (current_key_cooldown != 0)
-      current_key_cooldown--;
 
     if (key == VK_ENTER)
     {
@@ -476,19 +461,17 @@ static void game_loop()
       else if (!field->is_flagged)
         _show_field(cursor_position.x, cursor_position.y);
 
+      /* Show cursor again */
+      _draw_cell(game_board, cursor_position.x, cursor_position.y, CC_DARK_GREEN);
       /* Win condition */
       if (correct_guesses == (game_width * game_height) - game_bomb_amount)
         _win_animation();
-
-      enter_grace_period = 120; /* Useless bitch */
     }
 
-    if (!vec_cmpr(cursor_position, old_cursor_position) || enter_grace_period > 0)
+    if (!vec_cmpr(cursor_position, old_cursor_position))
     {
-      if (enter_grace_period > 0)
-        enter_grace_period--;
       _draw_cell(game_board, old_cursor_position.x, old_cursor_position.y, false);
-      _draw_cell(game_board, cursor_position.x, cursor_position.y, (enter_grace_period > 0) ? CC_RED : CC_DARK_GREEN);
+      _draw_cell(game_board, cursor_position.x, cursor_position.y, CC_DARK_GREEN);
     }
 
     /* Only redraw GUI if time is outdated */
